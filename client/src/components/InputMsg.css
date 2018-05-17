@@ -1,0 +1,51 @@
+.inputMsg {
+  position: fixed;
+  bottom: 0;
+  left: 83px;
+  right: 0;
+
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.inputMsg form {
+  border: 2px solid rgb(224, 224, 224);
+  border-left: none;
+  padding: 3px;
+  display: flex;
+  height: 2.5em;
+}
+
+.inputMsg .text {
+  flex-grow: 1;
+  height: 100%;
+  padding: 0 5px;
+}
+
+.inputMsg .text input {
+  font-size: 1em;
+}
+
+.inputMsg .submit {
+  width: 4em;
+  height: 100%;
+}
+
+input {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  border: none;
+  background-color: rgba(255, 255, 255, 0);
+}
+
+.submit input {
+  border: none;
+  /* background-color: white; */
+  color: rgb(0, 128, 255);
+  font-size: 0.8em;
+  font-weight: bold;
+}
+
+.submit input:hover {
+  cursor: pointer;
+}
