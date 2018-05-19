@@ -29,7 +29,7 @@ ConItem.propTypes = {
 
 class ConList extends Component {
   componentDidMount () {
-    this.props.updateCons()
+    // this.props.updateCons()
   }
 
   render () {

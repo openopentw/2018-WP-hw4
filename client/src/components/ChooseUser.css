@@ -1,0 +1,31 @@
+.ChooseUser {
+  margin: 0 auto;
+  margin-top: 4em;
+
+  border: 2px solid rgb(224, 224, 224);
+}
+
+.ChooseUser p {
+  margin: 0;
+  padding: 1em;
+
+  color: grey;
+  font-size: 1.2em;
+  border-bottom: 2px solid rgb(224, 224, 224);
+}
+
+.ChooseUser .UserItem button {
+  padding: 0.5em;
+  padding-left: 2em;
+  width: 100%;
+  text-align: left;
+
+  background-color: white;
+  font-size: 1.2em;
+  border: none;
+}
+
+.ChooseUser .UserItem button:hover {
+  background-color: rgb(224, 224, 224);
+  cursor: pointer;
+}
