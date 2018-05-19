@@ -107,6 +107,20 @@ class App extends Component {
     })
   }
 
+  componentDidMount () {
+    this.mounted = true
+    this.interval = setInterval(() => {
+      if (this.mounted) {
+        this.updateCons()
+      }
+    }, 1000)
+  }
+
+  componentWillUnmount () {
+    this.mounted = false
+    clearInterval(this.interval)
+  }
+
   render() {
     if (!this.state.isChoosed) {
       return (
@@ -127,7 +141,6 @@ class App extends Component {
               userCons={this.state.userCons}
               conUserIds={this.state.conUserIds}
               changeConId={this.changeConId.bind(this)}
-              updateConUserIds={this.updateConUserIds.bind(this)}
             />
           </div>
           <div className="con">
@@ -139,7 +152,6 @@ class App extends Component {
               users={this.state.users}
               userId={this.state.userId}
               conId={this.state.conId}
-              updateCons={this.updateCons.bind(this)}
             />
             <InputMsg
               msg={this.state.msg}
