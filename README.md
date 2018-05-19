@@ -8,7 +8,6 @@ A chatroom website.
 
   ```bash
   git clone [url]
-  cd [repo]
   ```
 
 - Install modules for express.

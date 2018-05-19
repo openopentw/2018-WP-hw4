@@ -28,10 +28,6 @@ ConItem.propTypes = {
 };
 
 class ConList extends Component {
-  componentDidMount () {
-    // this.props.updateCons()
-  }
-
   render () {
     return (
       <div className="conList" onClick={() => document.getElementById('msg-text').focus()}>
@@ -52,7 +48,6 @@ ConList.propTypes = {
   cons: PropTypes.array,
   users: PropTypes.object,
   userId: PropTypes.number,
-  updateCons: PropTypes.func
 }
 
 export default ConList
