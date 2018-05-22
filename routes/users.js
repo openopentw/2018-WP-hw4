@@ -1,143 +1,199 @@
 let express = require('express')
 let router = express.Router()
 
-let users = {
+/* Structure of Data:
+ *
+ * UsersName [userId] :
+ *     name
+ *
+ * UsersCons [userId] (array of objects) :
+ *     conId // conversations
+ *     frndIds (array of frndId) : // friends' indexes
+ *         frndId
+ *
+ * Cons [conId] : // conversations
+ *     authors (array of authorId) :
+ *         authorId
+ *     msgs (array of objects) : // messages
+ *         authorId
+ *         msg
+ *
+ */
+
+let UsersName = {
   0: 'userA',
   1: 'userB',
   2: 'userC'
 }
 
-let userIdToCons = {
+let UsersCons = {
   0: [
-    0,
-    1
+    {
+      conId: 0,
+      frndIds: [
+        1,
+      ],
+    },
+    {
+      conId: 1,
+      frndIds: [
+        2,
+      ],
+    },
   ],
   1: [
-    0,
-    2
+    {
+      conId: 0,
+      frndIds: [
+        0,
+      ],
+    },
+    {
+      conId: 2,
+      frndIds: [
+        2,
+      ],
+    },
   ],
   2: [
-    1,
-    2
-  ]
+    {
+      conId: 1,
+      frndIds: [
+        0,
+      ],
+    },
+    {
+      conId: 2,
+      frndIds: [
+        1,
+      ],
+    },
+  ],
 }
 
-let cons = {
+let Cons = {
   0: {
-    ids: [
+    authors: [
       0,
-      1
+      1,
     ],
     msgs: [
       {
-        id: 0,
-        userId: 0,
-        msg: 'hi'
+        authorId: 0,
+        msg: 'hi',
       },
       {
-        id: 1,
-        userId: 1,
-        msg: '???'
+        authorId: 1,
+        msg: '???',
       },
       {
-        id: 2,
-        userId: 1,
-        msg: 'Who are you?'
-      }
+        authorId: 1,
+        msg: 'Who are you?',
+      },
     ]
   },
   1: {
-    ids: [
+    authors: [
       0,
-      2
+      2,
     ],
     msgs: [
       {
-        id: 0,
-        userId: 0,
-        msg: 'hey'
+        authorId: 0,
+        msg: 'hey',
       },
       {
-        id: 1,
-        userId: 0,
-        msg: 'you forget to turn off the light'
+        authorId: 0,
+        msg: 'you forget to turn off the light',
       },
       {
-        id: 2,
-        userId: 2,
-        msg: 'sorry, can you do that for me? thx'
-      }
+        authorId: 2,
+        msg: 'sorry, can you do that for me? thx',
+      },
     ]
   },
   2: {
-    ids: [
+    authors: [
       1,
-      2
+      2,
     ],
     msgs: [
-      { id: 0,
-        userId: 2,
-        msg: 'hey, what a beautiful day!'
+      {
+        authorId: 2,
+        msg: 'hey, what a beautiful day!',
       },
       {
-        id: 1,
-        userId: 2,
-        msg: 'let\'s go biking!'
+        authorId: 2,
+        msg: 'let\'s go biking!',
       },
       {
-        id: 2,
-        userId: 1,
-        msg: 'good idea!'
+        authorId: 1,
+        msg: 'good idea!',
       },
       {
-        id: 3,
-        userId: 1,
-        msg: 'i will be there at 10.'
-      }
+        authorId: 1,
+        msg: 'i will be there at 10.',
+      },
     ]
-  }
+  },
 }
 
-router.get('/:userId/conUserIds', function(req, res, next) {
-  let userId = parseInt(req.params.userId)
-  if (userId in users) {
-    let userCons = userIdToCons[userId]
+router.get('/allUsersName', function(req, res, next) {
+  res.json(UsersName)
+})
 
-    let conUserIds = []
+router.get('/:userId/UsersName', function(req, res, next) {
+  const userId = parseInt(req.params.userId, 10)
+  let usersName = {}
+  if (userId in UsersCons) {
+    const userCons = UsersCons[userId]
     for (let i = 0; i < userCons.length; ++i) {
-      let ids = cons[userCons[i]].ids
-      for (let j = 0; j < ids.length; ++j) {
-        if (ids[j] != userId) {
-          conUserIds.push(ids[j])
-          break;
-        }
-      }
+      userCons[i].frndIds.map(id => {
+        usersName[id] = UsersName[id]
+      })
     }
-    res.json({
-      userCons: userCons,
-      conUserIds: conUserIds
-    })
+  }
+  res.json(usersName)
+})
+
+router.get('/:userId/UsersCons', function(req, res, next) {
+  const userId = parseInt(req.params.userId, 10)
+  if (userId in UsersCons) {
+    res.json(UsersCons[userId])
+  } else {
+    res.json(null)
   }
 })
 
-router.get('/:userId/:conId', function(req, res, next) {
-  let conId = parseInt(req.params.conId)
-  if (conId in cons) {
-    res.json(cons[conId])
+router.get('/:userId/Cons', function(req, res, next) {
+  const userId = parseInt(req.params.userId, 10)
+  let retCons = {}
+  if (userId in UsersCons) {
+    UsersCons[userId].map(uc => {
+      retCons[uc.conId] = Cons[uc.conId]
+    })
   }
+  res.json(retCons)
 })
 
 router.post('/:userId/:conId', function(req, res, next) {
-  let conId = parseInt(req.params.conId)
-  if (conId in cons) {
-    const newId = cons[conId].msgs.length
-    cons[conId].msgs.push({
-      id: newId,
-      userId: parseInt(req.body.userId),
-      msg: req.body.msg
+  const userId = parseInt(req.params.userId)
+  const conId = parseInt(req.params.conId)
+  let retCons = []
+  if (conId in Cons) {
+    // push data
+    Cons[conId].msgs.push({
+      authorId: userId,
+      msg: req.body.msg,
     })
-    res.json(cons[conId])
+    // return data
+  if (userId in UsersCons) {
+    UsersCons[userId].map(uc => {
+      retCons[uc.conId] = Cons[uc.conId]
+    })
   }
+  }
+  res.json(retCons)
 })
 
 module.exports = router

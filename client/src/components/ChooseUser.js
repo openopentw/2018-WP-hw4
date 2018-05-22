@@ -27,21 +27,19 @@ UserItem.propTypes = {
 
 class ChooseUser extends Component {
   render () {
-    const {users, chooseUserId} = this.props
+    const {allUsersName, chooseUserId} = this.props
     return (
       <div className="ChooseUser">
         <p>Choose a username to login:</p>
         <div className="UserItemList">
           {
-            Object.keys(users).map((key, index) => {
-              return (
-                <UserItem
-                  key={parseInt(key, 10)}
-                  id={parseInt(key, 10)}
-                  userName={users[key]}
-                  chooseUserId={chooseUserId}
-                />
-              )}
+            Object.keys(allUsersName).map(key =>
+              <UserItem
+                key={parseInt(key, 10)}
+                id={parseInt(key, 10)}
+                userName={allUsersName[key]}
+                chooseUserId={chooseUserId}
+              />
             )
           }
         </div>
@@ -51,7 +49,7 @@ class ChooseUser extends Component {
 }
 
 ChooseUser.propTypes = {
-  users: PropTypes.object,
+  allUsersName: PropTypes.object,
   chooseUserId: PropTypes.func
 }
 

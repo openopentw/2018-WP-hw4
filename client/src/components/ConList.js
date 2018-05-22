@@ -29,14 +29,18 @@ ConItem.propTypes = {
 
 class ConList extends Component {
   render () {
+    const {msgs, usersName, userId} = this.props
     return (
-      <div className="conList" onClick={() => document.getElementById('msg-text').focus()}>
-        {this.props.cons.map(c =>
+      <div
+        className="conList"
+        onClick={() => document.getElementById('msg-text').focus()}
+      >
+        {msgs.map((m, id) =>
           <ConItem
-            key={c.id}
-            isMe={c.userId === this.props.userId}
-            userName={this.props.users[c.userId]}
-            msg={c.msg}
+            key={id}
+            isMe={m.authorId === userId}
+            userName={usersName[m.authorId]}
+            msg={m.msg}
           />
         )}
       </div>
@@ -45,8 +49,8 @@ class ConList extends Component {
 }
 
 ConList.propTypes = {
-  cons: PropTypes.array,
-  users: PropTypes.object,
+  msgs: PropTypes.array,
+  usersName: PropTypes.object,
   userId: PropTypes.number,
 }
 

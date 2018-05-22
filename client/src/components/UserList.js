@@ -5,11 +5,10 @@ import './UserList.css'
 
 class UserItem extends Component {
   render () {
-    const {userName, isActive, conId, changeConId} = this.props
-    const className = 'userItem' + (isActive? ' active' : '')
+    const {conId, userName, isActive, changeConId} = this.props
     return (
       <button
-        className={className}
+        className={`userItem ${(isActive? ' active' : '')}`}
         data-conid={conId}
         onClick={changeConId}
       >
@@ -20,29 +19,27 @@ class UserItem extends Component {
 }
 
 UserItem.propTypes = {
-  userName: PropTypes.string,
   conId: PropTypes.number,
+  userName: PropTypes.string,
   isActive: PropTypes.bool,
   changeConId: PropTypes.func
 };
 
 class UserList extends Component {
   render () {
-    const {otherId, userCons, conUserIds, users, changeConId} = this.props
+    const {frndId, usersName, usersCons, changeConId} = this.props
     let userItemList = []
-    for (let i = 0; i < userCons.length; ++i) {
-      const u = userCons[i]
-      const c = conUserIds[i]
+    usersCons.map(c => {
       userItemList.push(
         <UserItem
-          key={u}
-          conId={u}
-          userName={users[c]}
-          isActive={otherId === c}
+          key={c.conId}
+          conId={c.conId}
+          userName={usersName[c.frndIds[0]]}
+          isActive={frndId === c.frndIds[0]}
           changeConId={changeConId}
         />
       )
-    }
+    })
     return (
       <div className="userList">
         {userItemList}
@@ -52,10 +49,9 @@ class UserList extends Component {
 }
 
 UserList.propTypes = {
-  otherId: PropTypes.number,
-  userCons: PropTypes.array,
-  conUserIds: PropTypes.array,
-  users: PropTypes.object,
+  frndId: PropTypes.number,
+  usersName: PropTypes.object,
+  usersCons: PropTypes.array,
   changeConId: PropTypes.func,
 }
 

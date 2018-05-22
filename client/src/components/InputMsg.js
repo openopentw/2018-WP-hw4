@@ -5,6 +5,7 @@ import './InputMsg.css'
 
 class InputMsg extends Component {
   render () {
+    const {msg, updateMsg, postMsg} = this.props
     return (
       <div className="inputMsg">
         <form>
@@ -12,15 +13,15 @@ class InputMsg extends Component {
             <input
               id="msg-text"
               type="text"
-              value={this.props.msg}
-              onChange={this.props.updateSendMsg}
+              value={msg}
+              onChange={updateMsg}
             />
           </div>
           <div className="submit">
             <input
               type="submit"
               value="SEND"
-              onClick={this.props.submitSendMsg}
+              onClick={postMsg}
             />
           </div>
         </form>
@@ -31,8 +32,8 @@ class InputMsg extends Component {
 
 InputMsg.propTypes = {
   msg: PropTypes.string,
-  updateSendMsg: PropTypes.func,
-  submitSendMsg: PropTypes.func
+  updateMsg: PropTypes.func,
+  postMsg: PropTypes.func
 }
 
 export default InputMsg

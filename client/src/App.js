@@ -12,106 +12,137 @@ class App extends Component {
     super(props)
     this.state = {
       isChoosed: false,
-      cons: {
-        ids: [
-          0,
-          1
-        ],
-        msgs: []
+      allUsersName: {
+        // to be fetch
       },
-      userCons: [
-        0,
-        1
+      usersName: {
+        // to be fetch
+      },
+      usersCons: [
+        // to be fetch
       ],
-      conUserIds: [
-        1,
-        2
-      ],
-      users: {
-        0: 'userA',
-        1: 'userB',
-        2: 'userC'
+      cons: {
+        // to be fetch
       },
       userId: 0,
       conId: 0,
-      otherId: 1,
+      frndId: -1,
       msg: '',
     }
   }
 
-  updateSendMsg (e) {
+  updateMsg (e) {
     this.setState({
       msg: e.target.value
     })
   }
 
-  async submitSendMsg (e) {
-    e.preventDefault()
+  // TODO
+  showNewMsg (cons) {
+    Object.keys(this.state.cons).map(conId => {
+      const oriLen = this.state.cons[conId].msgs.length
+      const newLen = cons[conId].msgs.length
+      if (oriLen < newLen) {
+        for (let i = oriLen; i < newLen; ++i) {
+          if (cons.msgs[i].userId !== this.state.userId) {
+            // TODO
+            // console.log(cons.msgs[i])
+          }
+        }
+      }
+    })
+  }
 
-    const res = await fetch('/users/' + this.state.userId + '/' + this.state.conId, {
+  async getAllUsersName () {
+    let res = await fetch(`/users/allUsersName`)
+    res = await res.json()
+    this.setState({
+      allUsersName: res
+    })
+  }
+
+  async getUsersName () {
+    let res = await fetch(`/users/${this.state.userId}/UsersName`)
+    res = await res.json()
+    this.setState({
+      usersName: res
+    })
+  }
+
+  async getUsersCons () {
+    let res = await fetch(`/users/${this.state.userId}/UsersCons`)
+    res = await res.json()
+    this.setState({
+      usersCons: res,
+      conId: res[0].conId,
+      frndId: res[0].frndIds[0],
+    })
+  }
+
+  async getCons () {
+    let res = await fetch(`/users/${this.state.userId}/cons`)
+    res = await res.json()
+    // this.showNewMsg(res)
+    this.setState({
+      cons: res
+    })
+  }
+
+  async postMsg (e) {
+    e.preventDefault()
+    // submit
+    let res = await fetch(`/users/${this.state.userId}/${this.state.conId}$`, {
       method: 'post',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
-       userId: this.state.userId,
        msg: this.state.msg
       })
     })
-    const cons = await res.json()
-    this.setState({
-      cons: cons,
+    res = await res.json()
+    // update cons
+    // this.showNewMsg(res)
+    await this.setState({
+      cons: res,
       msg: ''
     })
-    window.scrollTo(0, document.body.scrollHeight)
-  }
-
-  async updateCons () {
-    const res = await fetch('/users/' + this.state.userId + '/' + this.state.conId)
-    const cons = await res.json()
-    const ids = cons.ids
-    let id = 0
-    for (let i = 0; i < ids.length; ++i) {
-      if (ids[i] !== this.state.userId) {
-        id = ids[i]
-        break
-      }
-    }
-    this.setState({
-      otherId: id,
-      cons: cons
-    })
-  }
-
-  async updateConUserIds () {
-    let res = await fetch('/users/' + this.state.userId + '/conUserIds')
-    res = await res.json()
-    this.setState({
-      conId: res.userCons[0],
-      userCons: res.userCons,
-      conUserIds: res.conUserIds
-    }, () => {this.updateCons()})
+    await window.scrollTo(0, document.body.scrollHeight)
   }
 
   changeConId (e) {
+    const newConId = parseInt(e.target.dataset.conid, 10)
+    let newFrndId = this.state.cons[newConId].authors[0]
+    if (newFrndId === this.state.userId) {
+      newFrndId = this.state.cons[newConId].authors[1]
+    }
     this.setState({
-      conId: parseInt(e.target.dataset.conid, 10)
-    }, () => this.updateCons())
+      conId: newConId,
+      frndId: newFrndId,
+    }, () => window.scrollTo(0, document.body.scrollHeight))
   }
 
-  chooseUserId (e) {
-    this.setState({
-      isChoosed: true,
+  async chooseUserId (e) {
+    await this.setState({
       userId: parseInt(e.target.dataset.userid, 10)
+    })
+    await this.getUsersName()
+    await this.getUsersCons()
+    await this.getCons()
+    await this.setState({
+      isChoosed: true,
     }, () => {
       document.getElementById('msg-text').focus()
-      this.updateConUserIds()
     })
+    await window.scrollTo(0, document.body.scrollHeight)
   }
 
   componentDidMount () {
+    this.getAllUsersName()
+    this.getUsersName()
+    this.getUsersCons()
     this.mounted = true
     this.interval = setInterval(() => {
       if (this.mounted) {
-        this.updateCons()
+        this.getCons()
       }
     }, 1000)
   }
@@ -126,7 +157,7 @@ class App extends Component {
       return (
         <div className="App">
           <ChooseUser
-            users={this.state.users}
+            allUsersName={this.state.allUsersName}
             chooseUserId={this.chooseUserId.bind(this)}
           />
         </div>
@@ -136,27 +167,26 @@ class App extends Component {
         <div className="App">
           <div className="nav">
             <UserList
-              users={this.state.users}
-              otherId={this.state.otherId}
-              userCons={this.state.userCons}
-              conUserIds={this.state.conUserIds}
+              frndId={this.state.frndId}
+              usersName={this.state.usersName}
+              usersCons={this.state.usersCons}
               changeConId={this.changeConId.bind(this)}
             />
           </div>
           <div className="con">
             <div className="header">
-              <h1>{this.state.users[this.state.otherId]}</h1>
+              <h1>{this.state.usersName[this.state.frndId]}</h1>
             </div>
             <ConList
-              cons={this.state.cons.msgs}
-              users={this.state.users}
+              msgs={this.state.cons[this.state.conId].msgs}
+              usersName={this.state.usersName}
               userId={this.state.userId}
               conId={this.state.conId}
             />
             <InputMsg
               msg={this.state.msg}
-              updateSendMsg={this.updateSendMsg.bind(this)}
-              submitSendMsg={this.submitSendMsg.bind(this)}
+              updateMsg={this.updateMsg.bind(this)}
+              postMsg={this.postMsg.bind(this)}
             />
           </div>
         </div>
