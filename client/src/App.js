@@ -24,6 +24,10 @@ class App extends Component {
       cons: {
         // to be fetch
       },
+      isConNewMsg: {
+        '-1': false,
+        // to be changed
+      },
       userId: 0,
       conId: 0,
       frndId: -1,
@@ -37,20 +41,29 @@ class App extends Component {
     })
   }
 
-  // TODO
   showNewMsg (cons) {
+    let toScrollDown = false
     Object.keys(this.state.cons).map(conId => {
       const oriLen = this.state.cons[conId].msgs.length
       const newLen = cons[conId].msgs.length
       if (oriLen < newLen) {
+        if (conId == this.state.conId) {
+          toScrollDown = true
+        }
+        const con = cons[conId]
         for (let i = oriLen; i < newLen; ++i) {
-          if (cons.msgs[i].userId !== this.state.userId) {
-            // TODO
-            // console.log(cons.msgs[i])
+          if (con.msgs[i].authorId !== this.state.userId && conId != this.state.conId) {
+            let newIsConNewMsg = JSON.parse(JSON.stringify(this.state.isConNewMsg))
+            newIsConNewMsg[conId] = true
+            this.setState({
+              isConNewMsg: newIsConNewMsg
+            })
+            break
           }
         }
       }
     })
+    return toScrollDown
   }
 
   async getAllUsersName () {
@@ -82,9 +95,16 @@ class App extends Component {
   async getCons () {
     let res = await fetch(`/users/${this.state.userId}/cons`)
     res = await res.json()
-    // this.showNewMsg(res)
+    let toScrollDown = false
+    if (this.state.isChoosed) {
+      toScrollDown = await this.showNewMsg(res)
+    }
     this.setState({
       cons: res
+    }, () => {
+      if (toScrollDown) {
+        window.scrollTo(0, document.body.scrollHeight)
+      }
     })
   }
 
@@ -99,8 +119,8 @@ class App extends Component {
       })
     })
     res = await res.json()
-    // update cons
-    // this.showNewMsg(res)
+    // get cons
+    await this.showNewMsg(res)
     await this.setState({
       cons: res,
       msg: ''
@@ -114,9 +134,13 @@ class App extends Component {
     if (newFrndId === this.state.userId) {
       newFrndId = this.state.cons[newConId].authors[1]
     }
+
+    let newIsConNewMsg = JSON.parse(JSON.stringify(this.state.isConNewMsg))
+    newIsConNewMsg[newConId] = false
     this.setState({
       conId: newConId,
       frndId: newFrndId,
+      isConNewMsg: newIsConNewMsg,
     }, () => window.scrollTo(0, document.body.scrollHeight))
   }
 
@@ -170,6 +194,7 @@ class App extends Component {
               frndId={this.state.frndId}
               usersName={this.state.usersName}
               usersCons={this.state.usersCons}
+              isConNewMsg={this.state.isConNewMsg}
               changeConId={this.changeConId.bind(this)}
             />
           </div>

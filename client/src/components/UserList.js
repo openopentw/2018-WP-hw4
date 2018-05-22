@@ -5,10 +5,10 @@ import './UserList.css'
 
 class UserItem extends Component {
   render () {
-    const {conId, userName, isActive, changeConId} = this.props
+    const {conId, userName, isActive, isNewMsg, changeConId} = this.props
     return (
       <button
-        className={`userItem ${(isActive? ' active' : '')}`}
+        className={`userItem ${(isActive? ' active' : '')} ${(isNewMsg? ' newmsg' : '')}`}
         data-conid={conId}
         onClick={changeConId}
       >
@@ -22,27 +22,25 @@ UserItem.propTypes = {
   conId: PropTypes.number,
   userName: PropTypes.string,
   isActive: PropTypes.bool,
+  isNewMsg: PropTypes.bool,
   changeConId: PropTypes.func
 };
 
 class UserList extends Component {
   render () {
-    const {frndId, usersName, usersCons, changeConId} = this.props
-    let userItemList = []
-    usersCons.map(c => {
-      userItemList.push(
-        <UserItem
-          key={c.conId}
-          conId={c.conId}
-          userName={usersName[c.frndIds[0]]}
-          isActive={frndId === c.frndIds[0]}
-          changeConId={changeConId}
-        />
-      )
-    })
+    const {frndId, usersName, usersCons, isConNewMsg, changeConId} = this.props
     return (
       <div className="userList">
-        {userItemList}
+        {usersCons.map(c => (
+          <UserItem
+            key={c.conId}
+            conId={c.conId}
+            userName={usersName[c.frndIds[0]]}
+            isActive={frndId === c.frndIds[0]}
+            isNewMsg={(c.conId in isConNewMsg)? isConNewMsg[c.conId] : false}
+            changeConId={changeConId}
+          />
+        ))}
       </div>
     )
   }
@@ -52,6 +50,7 @@ UserList.propTypes = {
   frndId: PropTypes.number,
   usersName: PropTypes.object,
   usersCons: PropTypes.array,
+  isConNewMsg: PropTypes.object,
   changeConId: PropTypes.func,
 }
 

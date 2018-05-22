@@ -179,19 +179,19 @@ router.get('/:userId/Cons', function(req, res, next) {
 router.post('/:userId/:conId', function(req, res, next) {
   const userId = parseInt(req.params.userId)
   const conId = parseInt(req.params.conId)
-  let retCons = []
+  // push data
   if (conId in Cons) {
-    // push data
     Cons[conId].msgs.push({
       authorId: userId,
       msg: req.body.msg,
     })
-    // return data
+  }
+  // return data
+  let retCons = {}
   if (userId in UsersCons) {
     UsersCons[userId].map(uc => {
       retCons[uc.conId] = Cons[uc.conId]
     })
-  }
   }
   res.json(retCons)
 })

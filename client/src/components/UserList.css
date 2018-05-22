@@ -11,6 +11,11 @@
   background-color: rgb(236, 236, 236);
 }
 
+.userItem.newmsg {
+  color: rgb(0, 128, 255);
+  font-weight: bold;
+}
+
 .userItem:hover {
   cursor: pointer;
 }
