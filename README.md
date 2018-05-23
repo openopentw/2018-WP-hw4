@@ -26,12 +26,10 @@ A chatroom website.
 
 ## Commands to Use
 
-- Start express with port number `3001`.
+- Start express.
 
   ```bash
   cd [repo]
-  $env:PORT = 3001 # Windows Powershell
-  export PORT=3001 # Linux Bash
   npm start
   ```
 

@@ -1,4 +1,5 @@
 .userItem {
+  position: relative;
   padding: 1em 0.5em;
   width: 100%;
 
@@ -22,4 +23,21 @@
 
 .userItem .userName {
   font-size: 1em;
+}
+
+.userItem .dot {
+  display: none;
+}
+
+.userItem.newmsg .dot {
+  display: block;
+  position: absolute;
+  display: inline-block;
+  right: 5px;
+  top: 1em;
+  height: 7px;
+  width: 7px;
+
+  background-color: red;
+  border-radius: 50%;
 }

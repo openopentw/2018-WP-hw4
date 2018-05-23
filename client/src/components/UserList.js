@@ -8,11 +8,12 @@ class UserItem extends Component {
     const {conId, userName, isActive, isNewMsg, changeConId} = this.props
     return (
       <button
-        className={`userItem ${(isActive? ' active' : '')} ${(isNewMsg? ' newmsg' : '')}`}
+        className={`userItem${isActive? ' active' : ''}${isNewMsg? ' newmsg' : ''}`}
         data-conid={conId}
         onClick={changeConId}
       >
         <div className="userName">{userName}</div>
+        <span className="dot"></span>
       </button>
     )
   }
@@ -37,7 +38,7 @@ class UserList extends Component {
             conId={c.conId}
             userName={usersName[c.frndIds[0]]}
             isActive={frndId === c.frndIds[0]}
-            isNewMsg={(c.conId in isConNewMsg)? isConNewMsg[c.conId] : false}
+            isNewMsg={c.conId in isConNewMsg && isConNewMsg[c.conId]}
             changeConId={changeConId}
           />
         ))}
