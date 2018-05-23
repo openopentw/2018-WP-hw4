@@ -39,11 +39,6 @@ class App extends Component {
     this.setState({
       msg: e.target.value
     })
-    let newIsConNewMsg = JSON.parse(JSON.stringify(this.state.isConNewMsg))
-    newIsConNewMsg[this.state.conId] = false
-    this.setState({
-      isConNewMsg: newIsConNewMsg
-    })
   }
 
   showNewMsg (cons) {
@@ -194,7 +189,16 @@ class App extends Component {
     } else {
       document.title = this.state.allUsersName[this.state.userId]
       return (
-        <div className="App">
+        <div
+          className="App"
+          onFocus={(() => {
+            let newIsConNewMsg = JSON.parse(JSON.stringify(this.state.isConNewMsg))
+            newIsConNewMsg[this.state.conId] = false
+            this.setState({
+              isConNewMsg: newIsConNewMsg
+            })
+          })}
+        >
           <div className="nav">
             <UserList
               frndId={this.state.frndId}
