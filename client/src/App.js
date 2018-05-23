@@ -187,6 +187,7 @@ class App extends Component {
         </div>
       )
     } else {
+      document.title = this.state.allUsersName[this.state.userId]
       return (
         <div className="App">
           <div className="nav">
