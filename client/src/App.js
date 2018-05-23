@@ -39,6 +39,11 @@ class App extends Component {
     this.setState({
       msg: e.target.value
     })
+    let newIsConNewMsg = JSON.parse(JSON.stringify(this.state.isConNewMsg))
+    newIsConNewMsg[this.state.conId] = false
+    this.setState({
+      isConNewMsg: newIsConNewMsg
+    })
   }
 
   showNewMsg (cons) {
@@ -52,7 +57,7 @@ class App extends Component {
         }
         const con = cons[conId]
         for (let i = oriLen; i < newLen; ++i) {
-          if (con.msgs[i].authorId !== this.state.userId && conId != this.state.conId) {
+          if (con.msgs[i].authorId !== this.state.userId) {
             let newIsConNewMsg = JSON.parse(JSON.stringify(this.state.isConNewMsg))
             newIsConNewMsg[conId] = true
             this.setState({
